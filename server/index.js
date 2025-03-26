@@ -15,10 +15,19 @@ const io = socketIo(server, {
 
 app.use(cors());
 app.use(express.json());
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // WebSocket and camera streaming logic will be implemented here
 io.on('connection', (socket) => {
   console.log('New client connected');
+  console.log(`Frontend running on: http://localhost:5173`);
+  console.log(`Backend running on: http://localhost:5000`);
+  console.log(`Current environment: ${process.env.NODE_ENV}`);
   
   socket.on('disconnect', () => {
     console.log('Client disconnected');
