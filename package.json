@@ -6,6 +6,7 @@
     "@reduxjs/toolkit": "^2.6.1",
     "axios": "^1.8.4",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.484.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.4.0",
     "simple-peer": "^9.11.1",
