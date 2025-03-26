@@ -1,9 +1,11 @@
-// client/src/pages/Dashboard.jsx
+// Additional functionality and improved UI
 import React, { useState } from 'react';
-import { Grid, Paper, Button, Typography } from '@mui/material';
 
 const Dashboard = () => {
   const [activeCamera, setActiveCamera] = useState(0);
+  const [drsMode, setDrsMode] = useState(false);
+  const [recordedVideosOpen, setRecordedVideosOpen] = useState(false);
+
   const cameras = [
     { id: 0, name: 'Camera 1', src: '/placeholder-camera-1.jpg' },
     { id: 1, name: 'Camera 2', src: '/placeholder-camera-2.jpg' },
@@ -15,8 +17,20 @@ const Dashboard = () => {
     setActiveCamera(cameraId);
   };
 
+  const toggleDrsMode = () => {
+    setDrsMode((prev) => !prev);
+  };
+
+  const openRecordedVideos = () => {
+    setRecordedVideosOpen(true);
+  };
+
+  const closeRecordedVideos = () => {
+    setRecordedVideosOpen(false);
+  };
+
   return (
-    <div style={{ padding: '20px', height: '100vh' }}>
+    <div style={{ padding: '20px', height: '100vh', backgroundColor: '#eaeff1' }}>
       <Grid container spacing={2} style={{ height: '100%' }}>
         {/* Main Camera Feed */}
         <Grid item xs={12} md={8}>
@@ -27,7 +41,8 @@ const Dashboard = () => {
               display: 'flex', 
               justifyContent: 'center', 
               alignItems: 'center',
-              backgroundColor: '#f0f0f0'
+              backgroundColor: '#ffffff',
+              borderRadius: '10px'
             }}
           >
             <img 
@@ -36,11 +51,12 @@ const Dashboard = () => {
               style={{ 
                 maxWidth: '100%', 
                 maxHeight: '100%', 
-                objectFit: 'contain' 
+                objectFit: 'contain', 
+                borderRadius: '10px' 
               }}
             />
           </Paper>
-          <Typography variant="h6" style={{ marginTop: '10px' }}>
+          <Typography variant="h6" style={{ marginTop: '10px', textAlign: 'center' }}>
             {cameras[activeCamera].name}
           </Typography>
         </Grid>
@@ -57,7 +73,9 @@ const Dashboard = () => {
                     width: '100%', 
                     height: '150px', 
                     padding: 0,
-                    border: activeCamera === camera.id ? 'none' : '2px solid #ccc'
+                    border: activeCamera === camera.id ? 'none' : '2px solid #ccc',
+                    borderRadius: '10px',
+                    overflow: 'hidden'
                   }}
                 >
                   <img 
@@ -79,10 +97,11 @@ const Dashboard = () => {
             <Grid item xs={6}>
               <Button 
                 variant="contained" 
-                color="primary" 
+                color={drsMode ? 'success' : 'primary'} 
                 fullWidth
+                onClick={toggleDrsMode}
               >
-                DRS Mode
+                {drsMode ? 'DRS Mode On' : 'DRS Mode'}
               </Button>
             </Grid>
             <Grid item xs={6}>
@@ -90,6 +109,7 @@ const Dashboard = () => {
                 variant="contained" 
                 color="secondary" 
                 fullWidth
+                onClick={openRecordedVideos}
               >
                 Recorded Videos
               </Button>
@@ -97,6 +117,19 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Recorded Videos Dialog */}
+      <Dialog open={recordedVideosOpen} onClose={closeRecordedVideos}>
+        <DialogTitle>Recorded Videos</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">No recorded videos available at the moment.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeRecordedVideos} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
