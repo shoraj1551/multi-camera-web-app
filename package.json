@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.4.8",
+    "@reduxjs/toolkit": "^2.6.1",
+    "axios": "^1.8.4",
+    "lodash": "^4.17.21",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.4.0",
+    "simple-peer": "^9.11.1",
+    "socket.io-client": "^4.8.1"
+  }
+}
