@@ -1,10 +1,13 @@
 // server/index.js
 const express = require('express');
+const { testPythonService } = require('./services/streamService');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
@@ -22,6 +25,11 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT}`);
+  await testPythonService();
+});
+
 // WebSocket and camera streaming logic will be implemented here
 io.on('connection', (socket) => {
   console.log('New client connected');
@@ -34,5 +42,5 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

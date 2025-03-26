@@ -1,9 +1,7 @@
 const { Server } = require('ws');
 const { spawn } = require('child_process');
 const path = require('path');
-
-// File: /c:/Users/SHORAJ TOMER/multi-camera-web-app/server/src/services/streamService.js
-
+const axios = require('axios');
 
 class StreamService {
     constructor(server) {
@@ -94,6 +92,15 @@ class StreamService {
             console.log(`Stopped stream for client ${clientId}`);
         }
     }
+    async testPythonService() {
+        try {
+            const response = await axios.get('http://localhost:8001/');
+            console.log("Python Service Response:", response.data);
+        } catch (error) {
+            console.error("Error calling Python service:", error.message);
+        }
+    }
 }
 
 module.exports = StreamService;
+module.exports = {testPythonService}
