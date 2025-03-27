@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Define the User schema
 const userSchema = new mongoose.Schema({
@@ -15,12 +15,19 @@ const userSchema = new mongoose.Schema({
         unique: true,
         lowercase: true,
         trim: true,
+        match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
     },
     password: {
         type: String,
         required: true,
-        minlength: 6,
-    },
+        minlength: 8, // Increase minimum length
+        validate: {
+            validator: function (value) {
+                return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/.test(value);
+            },
+            message: "Password must be at least 8 characters long and include uppercase, lowercase, a number, and a special character.",
+        },
+    },    
     createdAt: {
         type: Date,
         default: Date.now,
