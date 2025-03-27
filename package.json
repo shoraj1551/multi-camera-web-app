@@ -12,5 +12,9 @@
     "react-router-dom": "^7.4.0",
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.8.1"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   }
 }

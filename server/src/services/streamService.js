@@ -92,15 +92,17 @@ class StreamService {
             console.log(`Stopped stream for client ${clientId}`);
         }
     }
-    async testPythonService() {
-        try {
-            const response = await axios.get('http://localhost:8001/');
-            console.log("Python Service Response:", response.data);
-        } catch (error) {
-            console.error("Error calling Python service:", error.message);
-        }
+}
+
+// Fix: Define the function outside the class
+async function testPythonService() {
+    try {
+        const response = await axios.get('http://localhost:8001/');
+        console.log("Python Service Response:", response.data);
+    } catch (error) {
+        console.error("Error calling Python service:", error.message);
     }
 }
 
-module.exports = StreamService;
-module.exports = {testPythonService}
+// ✅ Correct module export
+module.exports = { StreamService, testPythonService };

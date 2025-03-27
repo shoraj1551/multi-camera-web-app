@@ -1,10 +1,10 @@
 // server/index.js
 const express = require('express');
-const { testPythonService } = require('./services/streamService');
+const { testPythonService } = require('./src/services/streamService');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
-const connectDB = require('./config/database');
+const connectDB = require('./src/config/database');
 
 require('dotenv').config();
 console.log("JWT Secret:", process.env.JWT_SECRET);
@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 // ✅ Routes
-app.use("/api/auth", require("./routes/authRoutes"));  // Authentication Routes
+app.use("/api/auth", require("./src/routes/authRoutes"));  // Authentication Routes
 
 // ✅ Health Check Route
 app.get('/health', (req, res) => {
