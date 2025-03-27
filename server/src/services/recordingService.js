@@ -8,13 +8,13 @@ class RecordingService {
         if (!fs.existsSync(this.outputDir)) {
             fs.mkdirSync(this.outputDir, { recursive: true });
         }
+        this.activeRecordings = {}; // Track active recordings per camera
     }
 
     startRecording(cameraId, outputFilename) {
         return new Promise((resolve, reject) => {
             const outputPath = path.join(this.outputDir, outputFilename);
 
-            // Simulate starting a recording process (e.g., using FFmpeg)
             const ffmpegProcess = spawn('ffmpeg', [
                 '-i', `rtsp://camera/${cameraId}`,
                 '-c:v', 'copy',
@@ -22,31 +22,28 @@ class RecordingService {
                 outputPath
             ]);
 
-            ffmpegProcess.on('error', (err) => {
-                reject(`Failed to start recording: ${err.message}`);
-            });
+            ffmpegProcess.on('error', (err) => reject(`Recording failed: ${err.message}`));
 
             ffmpegProcess.on('close', (code) => {
                 if (code === 0) {
-                    resolve(`Recording saved to ${outputPath}`);
+                    resolve(`Recording saved: ${outputPath}`);
                 } else {
-                    reject(`Recording process exited with code ${code}`);
+                    reject(`FFmpeg exited with code ${code}`);
                 }
             });
 
-            this.currentProcess = ffmpegProcess;
+            this.activeRecordings[cameraId] = ffmpegProcess;
         });
     }
 
-    stopRecording() {
+    stopRecording(cameraId) {
         return new Promise((resolve, reject) => {
-            if (this.currentProcess) {
-                this.currentProcess.kill('SIGINT');
-                this.currentProcess.on('close', () => {
-                    resolve('Recording stopped successfully.');
-                });
+            if (this.activeRecordings[cameraId]) {
+                this.activeRecordings[cameraId].kill('SIGINT');
+                delete this.activeRecordings[cameraId];
+                resolve(`Recording for Camera ${cameraId} stopped.`);
             } else {
-                reject('No recording process is currently running.');
+                reject(`No active recording found for Camera ${cameraId}`);
             }
         });
     }
@@ -54,11 +51,8 @@ class RecordingService {
     listRecordings() {
         return new Promise((resolve, reject) => {
             fs.readdir(this.outputDir, (err, files) => {
-                if (err) {
-                    reject(`Failed to list recordings: ${err.message}`);
-                } else {
-                    resolve(files.filter(file => file.endsWith('.mp4')));
-                }
+                if (err) reject(`Failed to list recordings: ${err.message}`);
+                else resolve(files.filter(file => file.endsWith('.mp4')));
             });
         });
     }
@@ -67,11 +61,8 @@ class RecordingService {
         return new Promise((resolve, reject) => {
             const filePath = path.join(this.outputDir, filename);
             fs.unlink(filePath, (err) => {
-                if (err) {
-                    reject(`Failed to delete recording: ${err.message}`);
-                } else {
-                    resolve(`${filename} deleted successfully.`);
-                }
+                if (err) reject(`Failed to delete recording: ${err.message}`);
+                else resolve(`${filename} deleted successfully.`);
             });
         });
     }
