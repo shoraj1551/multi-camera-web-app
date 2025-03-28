@@ -1,26 +1,30 @@
 // server/index.js
 const express = require('express');
-const { testPythonService } = require('./src/services/streamService');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
+const dotenv = require('dotenv');
+
+const { testPythonService } = require('./src/services/streamService');
 const connectDB = require('./src/config/database');
+const cameraRoutes = require("./src/routes/cameraRoutes");
 
-require('dotenv').config();
-console.log("JWT Secret:", process.env.JWT_SECRET);
-
-const app = express();
-const PORT = process.env.PORT || 8000;
-
+dotenv.config();
 // ✅ Connect to MongoDB BEFORE starting the server
 connectDB();
 
+console.log("JWT Secret:", process.env.JWT_SECRET);
+
+const app = express();
 // ✅ Middleware
 app.use(cors());
 app.use(express.json());
 
+const PORT = process.env.PORT || 8000;
+
 // ✅ Routes
-app.use("/api/auth", require("./src/routes/authRoutes"));  // Authentication Routes
+app.use("/api/auth", require("./src/routes/authRoutes"));// Authentication Routes
+app.use("/api/cameras", cameraRoutes); // Camera Routes
 
 // ✅ Health Check Route
 app.get('/health', (req, res) => {
